@@ -61,9 +61,10 @@ if ($options['debug']) {
 
 $output = '';
 if ($options['toPlaceholder']) {
-	$modx->setPlaceholder('yass.' . $options['keyName'] . '.value', $modx->Yass->getKey());
-	$modx->setPlaceholder('yass.' . $options['keyName'] . '.output', $modx->Yass->output['html']);
-	$modx->setPlaceholder('yass.' . $options['keyName'] . '.debug', $modx->Yass->output['debug']);
+	$keyName = ($options['keyName'] != 'default') ? $options['keyName'] . '.' : '';
+	$modx->setPlaceholder('yass.' . $keyName . 'value', $modx->Yass->getKey());
+	$modx->setPlaceholder('yass.' . $keyName . 'output', $modx->Yass->output['html']);
+	$modx->setPlaceholder('yass.' . $keyName . 'debug', $modx->Yass->output['debug']);
 } else {
 	$output = $modx->Yass->output['html'] . $modx->Yass->output['debug'];
 }
