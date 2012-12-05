@@ -49,8 +49,8 @@ The following placeholder are set with the toPlaceholder parameter:
 Placeholder           | Value
 --------------------- | --------------------------------------------------------
 yass.(keyname).value  | Current value of the keyname
-yass.(keyname).output | 
-yass.(keyname).debug  | 
+yass.(keyname).output | Output of the snippet
+yass.(keyname).debug  | Debug information
 
-(keyname) is set by keyName parameter - if keyName is not set the placeholder 
+(keyname) is set by keyName parameter – if keyName is not set the placeholder 
 names are yass.value, yass.output, yass.debug
