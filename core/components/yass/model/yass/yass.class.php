@@ -78,6 +78,7 @@ if (!class_exists('Yass')) {
 			$this->keyName = $options['keyName'];
 			$this->keyValue = $options['keyValue'];
 			$this->keyExpires = $options['keyExpires'];
+			$this->refreshExpires = $options['refreshExpires'];
 			$this->resource = $options['resource'];
 
 			$this->modx->setOption('cultureKey', $options['language']);
@@ -89,10 +90,13 @@ if (!class_exists('Yass')) {
 
 		function setKey() {
 			if (isset($_REQUEST[$this->keyName])) {
+				// the session key is only set by request
 				if ($_REQUEST[$this->keyName] != '') {
+					// and if the value is not empty
 					$this->session[$this->keyName]['value'] = $this->modx->stripTags($_REQUEST[$this->keyName]);
 					$this->session[$this->keyName]['expires'] = ($this->keyExpires) ? time() + $this->keyExpires : 0;
 				} elseif (isset($this->session[$this->keyName])) {
+					// otherwise the session key is removed
 					unset($this->session[$this->keyName]);
 				}
 			}
@@ -101,8 +105,13 @@ if (!class_exists('Yass')) {
 		function getKey() {
 			if (isset($this->session[$this->keyName])) {
 				if ($this->session[$this->keyName]['expires'] == 0 || $this->session[$this->keyName]['expires'] >= time()) {
+					if ($this->refreshExpires) {
+						$this->session[$this->keyName]['expires'] = ($this->keyExpires) ? time() + $this->keyExpires : 0;
+					}
+					// get session key value only if it is not expired
 					return $this->session[$this->keyName]['value'];
 				} else {
+					// otherwise remove the session key
 					unset($this->session[$this->keyName]);
 					return FALSE;
 				}

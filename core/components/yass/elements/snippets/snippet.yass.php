@@ -38,6 +38,7 @@ if (!isset($modx->Yass)) {
 $options['keyName'] = $modx->getOption('keyName', $scriptProperties, 'default');
 $options['keyValue'] = $modx->getOption('keyValue', $scriptProperties, 'defaultValue');
 $options['keyExpires'] = (int) $modx->getOption('keyExpires', $scriptProperties, 0);
+$options['refreshExpires'] = (boolean) $modx->getOption('refreshExpires', $scriptProperties, false);
 $options['resource'] = (int) $modx->getOption('resource', $scriptProperties, 0);
 $options['resource'] = ($options['resource'] != 0) ? $options['resource'] : $modx->resource->get('id');
 $options['language'] = $modx->getOption('language', $scriptProperties, 'en');
@@ -54,6 +55,7 @@ $modx->Yass->setOutput();
 
 if ($options['debug']) {
 	$modx->Yass->output['debug'] = '<pre>Yass Session' . "\r\n" . print_r($_SESSION['yass'], true) . "\r\n";
+	$modx->Yass->output['debug'] .= 'Time' . "\r\n" . time() . "\r\n";
 	$modx->Yass->output['debug'] .= 'Yass Settings' . "\r\n" . print_r($options, true) . '</pre>';
 } else {
 	$modx->Yass->output['debug'] = '';

@@ -8,7 +8,8 @@ Features:
 Yass is a simple session saving solution for MODX Revolution. With this snippet 
 you could display a link (a form post ist possible too) that changes a value in 
 the current user session. The key name, value and expiration could be set by 
-snippet parameter. 
+snippet parameter. The current value of the session key could be retreived in a
+placeholder.
 
 Installation:
 --------------------------------------------------------------------------------
@@ -21,21 +22,23 @@ Usage
 
 with the following properties:
 
-Property      | Description            | Default
-------------- | ---------------------- | ---------------------------------------
-resource      | Resource Id            | Current Resource id
-keyName       | Session Key Name       | default
-keyValue      | Session Key Value      | defaultValue
-keyExpires    | Session Key Expires    | 0 (does not expire)
-              | (in seconds)           | 
-language      | Snippet Language       | en
-toPlaceholder | Surpresses output and  |
-              | sets placeholder       | false
-debug         | Show Debug Information | false
-enabledTpl    | Chunk that is shown if | see defaultEnabled.template.html
-              | session key is set     | in core/components/yass/templates
-disabledTpl   | Chunk that is shown if | see defaultDisabled.template.html
-              | session key is not set | in core/components/yass/templates
+Property       | Description            | Default
+-------------- | ---------------------- | --------------------------------------
+resource       | Resource Id            | Current Resource id
+keyName        | Session Key Name       | default
+keyValue       | Session Key Value      | defaultValue
+keyExpires     | Session Key Expires    | 0 (does not expire)
+               | (in seconds)           | 
+refreshExpires | Refresh Session Key    | false
+               | Expiration every call  | 
+language       | Snippet Language       | en
+toPlaceholder  | Surpresses output and  |
+               | sets placeholder       | false
+debug          | Show Debug Information | false
+enabledTpl     | Chunk that is shown if | see defaultEnabled.template.html
+               | session key is set     | in core/components/yass/templates
+disabledTpl    | Chunk that is shown if | see defaultDisabled.template.html
+               | session key is not set | in core/components/yass/templates
 
 The following placeholder could be used in the template chunks:
 
