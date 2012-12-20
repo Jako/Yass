@@ -1,9 +1,9 @@
 <?php
 /*
  * Yass
- * 
+ *
  * Copyright 2012 by Thomas Jakobi <thomas.jakobi@partout.info>
- * 
+ *
  * Yass is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any
@@ -11,7 +11,7 @@
  *
  * Yass is distributed in the hope that it will be useful, but WITHOUT 
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  *
  * You should have received a copy of the GNU General Public License along with
@@ -32,7 +32,7 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME', 'Yass');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
-define('PKG_VERSION', '0.3.1');
+define('PKG_VERSION', '0.3.2');
 define('PKG_RELEASE', 'pl');
 
 /* define sources */
@@ -42,7 +42,9 @@ $sources = array(
 	'build' => $root . '_build/',
 	'data' => $root . '_build/data/',
 	'resolvers' => $root . '_build/resolvers/',
-	'properties' => $root . '_build/properties/',
+	'properties' => $root . '_build/data/properties/',
+	'events' => $root . '_build/data/events/',
+	'permissions' => $root . '_build/data/permissions/',
 	'chunks' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/chunks/',
 	'snippets' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/snippets/',
 	'plugins' => $root . 'core/components/' . PKG_NAME_LOWER . '/elements/plugins/',
@@ -105,11 +107,13 @@ $attr = array(
 );
 $vehicle = $builder->createVehicle($category, $attr);
 
-$modx->log(modX::LOG_LEVEL_INFO, 'Adding file resolvers to plugin...');
+$modx->log(modX::LOG_LEVEL_INFO, 'Adding file resolvers ...');
 $vehicle->resolve('file', array(
 	'source' => $sources['source_core'],
 	'target' => "return MODX_CORE_PATH . 'components/';"
 ));
+$modx->log(modX::LOG_LEVEL_INFO, 'Packaged in folders.');
+flush();
 $builder->putVehicle($vehicle);
 
 /* now pack in the license file, readme and changelog */

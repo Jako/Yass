@@ -1,84 +1,92 @@
 <?php
 /*
- * Name: yassChunkie
+ * Name: revoChunkie
  * Original name: Chunkie
  * Version: 1.0
  * Author: Armand "bS" Pondman (apondman@zerobarrier.nl)
  * Date: Oct 8, 2006 00:00 CET
- * Modified for Revolution & yass by Thomas Jakobi (thomas.jakobi@partout.info)
+ * Modified for Revolution by Thomas Jakobi (thomas.jakobi@partout.info)
  */
 
-class yassChunkie {
+if (!class_exists('revoChunkie')) {
 
-	var $template;
-	var $templates;
-	var $placeholders;
-	private $depth;
-	private $maxdepth;
+	class revoChunkie {
 
-	function yassChunkie($template = '', $templates = array()) {
-		$this->templates = & $templates;
-		$this->template = $this->getTemplate($template);
-		$this->depth = 0;
-		$this->maxdepth = 4;
-	}
+		private $template;
+		private $basepath;
+		private $placeholders;
+		private $depth;
+		private $maxdepth;
 
-	function CreateVars($value = '', $key = '', $path = '') {
-		$this->depth++;
-		if ($this->depth > $this->maxdepth) {
-			return;
+		function revoChunkie($template = '', $basepath = '') {
+			global $modx;
+
+			$this->template = $this->getTemplate($template);
+			$this->depth = 0;
+			$this->maxdepth = 4;
+			$this->basepath = ($basepath == '') ? $modx->getOption('core_path') : $modx->getOption('base_path') . $basepath;
 		}
-		$keypath = !empty($path) ? $path . '.' . $key : $key;
 
-		if (is_array($value)) {
-			foreach ($value as $subkey => $subval) {
-				$this->CreateVars($subval, $subkey, $keypath);
-				$this->depth--;
+		function setBasepath($basepath) {
+			global $modx;
+
+			$this->basepath = $basepath;
+		}
+
+		function CreateVars($value = '', $key = '', $path = '') {
+			$this->depth++;
+			if ($this->depth > $this->maxdepth) {
+				return;
 			}
-		} else {
-			$this->placeholders[$keypath] = $value;
+			$keypath = !empty($path) ? $path . "." . $key : $key;
+
+			if (is_array($value)) {
+				foreach ($value as $subkey => $subval) {
+					$this->CreateVars($subval, $subkey, $keypath);
+					$this->depth--;
+				}
+			} else {
+				$this->placeholders[$keypath] = $value;
+			}
 		}
-	}
 
-	function AddVar($name, $value) {
-		$this->placeholders[$name] = $value;
-	}
+		function AddVar($name, $value) {
+			$this->placeholders[$name] = $value;
+		}
 
-	function Render() {
-		global $modx;
+		function Render() {
+			global $modx;
 
-		$template = $this->template;
-		$chunk = $modx->newObject('modChunk');
-		$chunk->setCacheable(false);
-		$template = $chunk->process($this->placeholders, $template);
-		unset($chunk);
-		return $template;
-	}
+			$template = $this->template;
+			$chunk = $modx->newObject('modChunk');
+			$chunk->setCacheable(false);
+			$template = $chunk->process($this->placeholders, $template);
+			unset($chunk);
+			return $template;
+		}
 
-	function getTemplate($tpl) {
-		global $modx;
+		function getTemplate($tpl) {
+			global $modx;
 
-		$template = '';
-		if (isset($this->templates[$tpl])) {
-			$template = $this->templates[$tpl];
-		} else {
-			if (substr($tpl, 0, 6) == '@FILE ') {
+			$template = "";
+
+			if (substr($tpl, 0, 6) == "@FILE ") {
 				$filename = substr($tpl, 6);
 				if (!isset($modx->chunkieCache['@FILE'])) {
 					$modx->chunkieCache['@FILE'] = array();
 				}
 				if (!array_key_exists($filename, $modx->chunkieCache['@FILE'])) {
-					if (file_exists(MODX_CORE_PATH . $filename)) {
-						$template = file_get_contents(MODX_CORE_PATH . $filename);
+					if (file_exists($this->basepath . $filename)) {
+						$template = file_get_contents($this->basepath . $filename);
 					}
 					$modx->chunkieCache['@FILE'][$filename] = $template;
 				} else {
 					$template = $modx->chunkieCache['@FILE'][$filename];
 				}
-			} elseif (substr($tpl, 0, 8) == '@INLINE ') {
+			} elseif (substr($tpl, 0, 8) == "@INLINE ") {
 				$template = substr($tpl, 8);
 			} else {
-				if (substr($tpl, 0, 7) == '@CHUNK ') {
+				if (substr($tpl, 0, 7) == "@CHUNK ") {
 					$chunkname = substr($tpl, 7);
 				} else {
 					$chunkname = $tpl;
@@ -96,12 +104,12 @@ class yassChunkie {
 				}
 				$template = $modx->chunkieCache['@CHUNK'][$chunkname];
 			}
-			$this->templates[$tpl] = $template;
+
+			$this->template = $template;
+			return $this->template;
 		}
 
-		return $template;
 	}
 
 }
-
 ?>

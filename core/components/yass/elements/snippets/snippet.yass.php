@@ -42,6 +42,7 @@ $options['refreshExpires'] = (boolean) $modx->getOption('refreshExpires', $scrip
 $options['resource'] = (int) $modx->getOption('resource', $scriptProperties, 0);
 $options['resource'] = ($options['resource'] != 0) ? $options['resource'] : $modx->resource->get('id');
 $options['language'] = $modx->getOption('language', $scriptProperties, 'en');
+$options['passParams'] = $modx->getOption('passParams', $scriptProperties, '');
 $options['toPlaceholder'] = (boolean) $modx->getOption('toPlaceholder', $scriptProperties, false);
 $options['debug'] = (boolean) $modx->getOption('debug', $scriptProperties, false);
 

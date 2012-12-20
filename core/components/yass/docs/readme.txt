@@ -22,23 +22,28 @@ Usage
 
 with the following properties:
 
-Property       | Description            | Default
--------------- | ---------------------- | --------------------------------------
-resource       | Resource Id            | Current Resource id
-keyName        | Session Key Name       | default
-keyValue       | Session Key Value      | defaultValue
-keyExpires     | Session Key Expires    | 0 (does not expire)
-               | (in seconds)           | 
-refreshExpires | Refresh Session Key    | false
-               | Expiration every call  | 
-language       | Snippet Language       | en
-toPlaceholder  | Surpresses output and  |
-               | sets placeholder       | false
-debug          | Show Debug Information | false
-enabledTpl     | Chunk that is shown if | see defaultEnabled.template.html
-               | session key is set     | in core/components/yass/templates
-disabledTpl    | Chunk that is shown if | see defaultDisabled.template.html
-               | session key is not set | in core/components/yass/templates
+Property       | Description                 | Default
+-------------- | --------------------------- | ---------------------------------
+resource       | Resource Id                 | Current Resource id
+keyName        | Session Key Name            | default
+keyValue       | Session Key Value           | defaultValue
+keyExpires     | Session Key Expires         | 0 (does not expire)
+               | (in seconds)                | 
+refreshExpires | Refresh Session Key         | false
+               | Expiration every call       | 
+language       | Snippet Language            | en
+passParams     | Comma separated list of url |
+               | parameter to pass through   |
+               | to enableUrl/disableUrl     |
+               | - could be set to 'all' for |
+               | all allowed url parameter   | 
+toPlaceholder  | Surpresses output and       |
+               | sets placeholder            | false
+debug          | Show Debug Information      | false
+enabledTpl     | Chunk that is shown if      | see defaultEnabled.template.html
+               | session key is set          | in core/components/yass/templates
+disabledTpl    | Chunk that is shown if      | see defaultDisabled.template.html
+               | session key is not set      | in core/components/yass/templates
 
 The following placeholder could be used in the template chunks:
 

@@ -30,6 +30,7 @@ keyValue       | Session Key Value                             | defaultValue
 keyExpires     | Session Key Expires (in seconds)              | 0 (does not expire)
 refreshExpires | Refresh Session Key Expiration on every call  | false
 language       | Snippet Language                              | en
+passParams     | Comma separated list of url parameter to pass through to enableUrl/disableUrl - could be set to `all` for all allowed url parameter | 
 toPlaceholder  | Surpresses output and sets placeholder        | false
 debug          | Show Debug Information                        | false
 enabledTpl     | Chunk that is shown if session key is set     | see defaultEnabled.template.html in core/components/yass/templates

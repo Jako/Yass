@@ -23,7 +23,7 @@
  * Yass modX service class.
  */
 
-if (!class_exists('yassChunkie')) {
+if (!class_exists('revoChunkie')) {
 	include YASS_CORE_PATH . 'model/includes/chunkie.class.inc.php';
 }
 
@@ -42,6 +42,7 @@ if (!class_exists('Yass')) {
 		private $resource;
 		private $language;
 		private $templates;
+		private $currentParams;
 
 		function __construct($modx) {
 			$this->modx = &$modx;
@@ -75,6 +76,7 @@ if (!class_exists('Yass')) {
 		}
 
 		function setOptions($options = array()) {
+
 			$this->keyName = $options['keyName'];
 			$this->keyValue = $options['keyValue'];
 			$this->keyExpires = $options['keyExpires'];
@@ -86,6 +88,26 @@ if (!class_exists('Yass')) {
 			$this->modx->lexicon->load('yass:default');
 			$this->language['enable'] = $this->modx->lexicon('yass.enable');
 			$this->language['disable'] = $this->modx->lexicon('yass.disable');
+
+			// Pass through get parameter
+			$reservedParams = array('q', $this->keyName);
+			$this->currentParams = array();
+			if ($options['passParams'] != '') {
+				$passParams = explode(',', $options['passParams']);
+				foreach ($_GET as $key => $value) {
+					if ($options['passParams'] == 'all') {
+						if (!in_array($key, $reservedParams)) {
+							$this->currentParams[$key] = $value;
+						}
+					} else {
+						if (in_array($key, $passParams)) {
+							if (!in_array($key, $reservedParams)) {
+								$this->currentParams[$key] = $value;
+							}
+						}
+					}
+				}
+			}
 		}
 
 		function setKey() {
@@ -127,14 +149,14 @@ if (!class_exists('Yass')) {
 
 		function setOutput() {
 			if ($this->getKey()) {
-				$parser = new yassChunkie($this->templates['enabledTpl']);
+				$parser = new revoChunkie($this->templates['enabledTpl']);
 			} else {
-				$parser = new yassChunkie($this->templates['disabledTpl']);
+				$parser = new revoChunkie($this->templates['disabledTpl']);
 			}
 			$parser->CreateVars($this->language, 'lang');
 			$parser->AddVar('id', $this->resource);
-			$parser->AddVar('enableUrl', $this->modx->makeUrl($this->resource, '', array($this->keyName => $this->keyValue), 'full'));
-			$parser->AddVar('disableUrl', $this->modx->makeUrl($this->resource, '', array($this->keyName => ''), 'full'));
+			$parser->AddVar('enableUrl', $this->modx->makeUrl($this->resource, '', array_merge($this->currentParams, array($this->keyName => $this->keyValue)), 'full'));
+			$parser->AddVar('disableUrl', $this->modx->makeUrl($this->resource, '', array_merge($this->currentParams, array($this->keyName => '')), 'full'));
 			$parser->AddVar('key', $this->keyName);
 			$parser->AddVar('value', $this->keyValue);
 			$this->output['html'] = $parser->Render();
