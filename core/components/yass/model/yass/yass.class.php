@@ -153,13 +153,13 @@ if (!class_exists('Yass')) {
 			} else {
 				$parser = new revoChunkie($this->templates['disabledTpl']);
 			}
-			$parser->CreateVars($this->language, 'lang');
-			$parser->AddVar('id', $this->resource);
-			$parser->AddVar('enableUrl', $this->modx->makeUrl($this->resource, '', array_merge($this->currentParams, array($this->keyName => $this->keyValue)), 'full'));
-			$parser->AddVar('disableUrl', $this->modx->makeUrl($this->resource, '', array_merge($this->currentParams, array($this->keyName => '')), 'full'));
-			$parser->AddVar('key', $this->keyName);
-			$parser->AddVar('value', $this->keyValue);
-			$this->output['html'] = $parser->Render();
+			$parser->createVars($this->language, 'lang');
+			$parser->addVar('id', $this->resource);
+			$parser->addVar('enableUrl', $this->modx->makeUrl($this->resource, '', array_merge($this->currentParams, array($this->keyName => $this->keyValue)), 'full'));
+			$parser->addVar('disableUrl', $this->modx->makeUrl($this->resource, '', array_merge($this->currentParams, array($this->keyName => '')), 'full'));
+			$parser->addVar('key', $this->keyName);
+			$parser->addVar('value', $this->keyValue);
+			$this->output['html'] = $parser->render();
 		}
 
 	}
