@@ -2,13 +2,14 @@
 /**
  * Name: revoChunkie
  * Original name: Chunkie
- * Version: 2.0
- *
- * Author: Armand "bS" Pondman <apondman@zerobarrier.nl>
- * Date: Oct 8, 2006
+ * Version: 2.1
  *
  * Modified and documented for Revolution by Thomas Jakobi <thomas.jakobi@partout.info>
- * Date: Mar 11, 2013
+ * Date: May 19, 2013
+ *
+ * Original Author: Armand "bS" Pondman <apondman@zerobarrier.nl>
+ * Date: Oct 8, 2006
+ *
  */
 if (!class_exists('revoChunkie')) {
 
@@ -31,6 +32,20 @@ if (!class_exists('revoChunkie')) {
 		 * @access private
 		 */
 		private $basepath;
+
+		/**
+		 * Uncached MODX tags are not parsed inside of revoChunkie.
+		 * @var string $parseLazy
+		 * @access private
+		 */
+		private $parseLazy;
+
+		/**
+		 * Array of placeholders that are not parsed but only replaced.
+		 * @var string $replaceOnly
+		 * @access private
+		 */
+		private $replaceOnly;
 
 		/**
 		 * A collection of all placeholders.
@@ -57,15 +72,21 @@ if (!class_exists('revoChunkie')) {
 		 * revoChunkie constructor
 		 *
 		 * @param string $template Name of MODX chunk
-		 * @param string $basepath Basepath @FILE is prefixed with.
+		 * @param array $options options for this instance of revoChunkie
 		 */
-		public function revoChunkie($template = '', $basepath = '') {
+		public function revoChunkie($template = '', $options = array()) {
 			global $modx;
 
-			$this->template = $this->getTemplate($template);
 			$this->depth = 0;
 			$this->maxdepth = 4;
-			$this->basepath = ($basepath == '') ? $modx->getOption('core_path') : $modx->getOption('base_path') . $basepath;
+			if ($modx->getOption('useCorePath', $options, FALSE)) {
+				$this->basepath = MODX_CORE_PATH . $modx->getOption('basepath', $options, ''); // Basepath @FILE is prefixed with.
+			} else {
+				$this->basepath = MODX_BASE_PATH . $modx->getOption('basepath', $options, ''); // Basepath @FILE is prefixed with.
+			}
+			$this->template = $this->getTemplate($template);
+			$this->parseLazy = $modx->getOption('parseLazy', $options, FALSE);
+			$this->replaceOnly = (array) $modx->getOption('replaceOnly', $options, array());
 		}
 
 		/**
@@ -95,13 +116,13 @@ if (!class_exists('revoChunkie')) {
 		 * be prefixed with
 		 */
 		public function createVars($value = '', $key = '', $keypath = '') {
-			$this->depth++;
 			if ($this->depth > $this->maxdepth) {
 				return;
 			}
 			$keypath = !empty($keypath) ? $keypath . "." . $key : $key;
 
 			if (is_array($value)) {
+				$this->depth++;
 				foreach ($value as $subkey => $subval) {
 					$this->createVars($subval, $subkey, $keypath);
 				}
@@ -123,7 +144,16 @@ if (!class_exists('revoChunkie')) {
 		}
 
 		/**
-		 * render the current template with the current placeholders.
+		 * Get the placeholder array.
+		 *
+		 * @access public
+		 */
+		public function getVars() {
+			return $this->placeholders;
+		}
+
+		/**
+		 * Render the current template with the current placeholders.
 		 *
 		 * @access public
 		 * @return string
@@ -136,6 +166,14 @@ if (!class_exists('revoChunkie')) {
 			$chunk->setCacheable(false);
 			$template = $chunk->process($this->placeholders, $template);
 			unset($chunk);
+			if ($this->parseLazy) {
+				$template = str_replace(array('[[#!'), array('[[!'), $template);
+			}
+			if (count($this->replaceOnly)) {
+				foreach ($this->replaceOnly as $placeholdername) {
+					$template = str_replace('[[#+' . $placeholdername . ']]', $this->placeholders[$placeholdername], $template);
+				}
+			}
 			return $template;
 		}
 
@@ -188,6 +226,16 @@ if (!class_exists('revoChunkie')) {
 					}
 				}
 				$template = $modx->chunkieCache['@CHUNK'][$chunkname];
+			}
+
+			if ($this->parseLazy) {
+				$template = str_replace('[[!', '[[#!', $template);
+			}
+
+			if (count($this->replaceOnly)) {
+				foreach ($this->replaceOnly as $placeholdername) {
+					$template = str_replace('[[+' . $placeholdername . ']]', '[[#+' . $placeholdername . ']]', $template);
+				}
 			}
 
 			return $template;
