@@ -24,9 +24,8 @@
  */
 
 // set base path
-define(YASS_PATH, 'components/yass/');
-
-define(YASS_CORE_PATH, MODX_CORE_PATH . YASS_PATH);
+define('YASS_PATH', 'components/yass/');
+define('YASS_CORE_PATH', MODX_CORE_PATH . YASS_PATH);
 
 include YASS_CORE_PATH . 'model/yass/yass.class.php';
 
