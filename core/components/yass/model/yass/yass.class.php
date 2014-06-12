@@ -57,7 +57,7 @@ if (!class_exists('Yass')) {
 		function includeFile($name, $type = 'config', $extension = '.inc.php', $defaultSuffix = '') {
 
 			$folder = (substr($type, -1) != 'y') ? $type . 's/' : substr($folder, 0, -1) . 'ies/';
-			$allowedConfigs = glob(YASS_PATH . $folder . '*.' . $type . $extension);
+			$allowedConfigs = glob(YASS_CORE_PATH . $folder . '*.' . $type . $extension);
 			$configs = array();
 			foreach ($allowedConfigs as $config) {
 				$configs[] = preg_replace('=.*/' . $folder . '([^.]*).' . $type . $extension . '=', '$1', $config);
@@ -66,7 +66,7 @@ if (!class_exists('Yass')) {
 			if (in_array($name, $configs)) {
 				$output = YASS_PATH . $folder . $name . '.' . $type . $extension;
 			} else {
-				if (file_exists(YASS_PATH . $folder . 'default' . $defaultSuffix . '.' . $type . $extension)) {
+				if (file_exists(YASS_CORE_PATH . $folder . 'default' . $defaultSuffix . '.' . $type . $extension)) {
 					$output = YASS_PATH . $folder . 'default' . $defaultSuffix . '.' . $type . $extension;
 				} else {
 					$output = 'Allowed ' . $name . ' and default Yass ' . $type . ' file "' . YASS_PATH . $folder . 'default' . $defaultSuffix . '.' . $type . $extension . '" not found. Did you upload all files?';
